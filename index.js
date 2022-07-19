@@ -1,9 +1,9 @@
 require('dotenv').config();
 
-const amqp = require('amqplib');
+const amqp = require('amqplib/callback_api');
 
 const server = process.env.RABBITMQ_SERVER;
-const queue = process.env.RABBITMQ_QUEUE;
+const queue = process.env.QUEUE;
 
 amqp.connect(server, (err0, connection) => {
     if (err0) {
