@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const amqp = require('amqplib/callback_api');
+const mailer = require('./mailer');
 
 const server = process.env.RABBITMQ_SERVER;
 const queue = process.env.QUEUE;
@@ -16,9 +17,14 @@ amqp.connect(server, (err0, connection) => {
         }
         channel.assertQueue(queue, { durable: true });
         channel.consume(queue, (msg) => {
-            const { to, body } = JSON.parse(msg.content.toString());
-            console.log('sending email to: ', to)
-            console.log(body);
+            const { to, subject, body } = JSON.parse(msg.content.toString());
+            mailer.sendMail({
+                sender: process.env.STMP_USER,
+                to,
+                subject,
+                html: body,
+            });
+            console.log(`[+] email sent to ${to}`);
             channel.ack(msg);
         }, { noAck: false });
     });
