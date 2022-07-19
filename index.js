@@ -9,6 +9,7 @@ amqp.connect(server, (err0, connection) => {
     if (err0) {
         throw err0;
     }
+    console.log(`server connected and ready to receive message`);
     connection.createChannel((err1, channel) => {
         if (err1) {
             throw err1;
